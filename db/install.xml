@@ -1,17 +1,71 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/groqchat/db" VERSION="2025062100" COMMENT="Groq Chatbot Plugin DB">
+<!-- File path: db/install.xml (REPLACE existing install.xml) -->
+<XMLDB PATH="local/groqchat/db" VERSION="2025062101" COMMENT="AI Balance Trainer Plugin DB">
   <TABLES>
-    <TABLE NAME="local_groqchat_logs" COMMENT="Logs of Groq chatbot usage">
+    <TABLE NAME="local_groqchat_logs" COMMENT="Logs of AI chatbot usage">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="question" TYPE="text" NOTNULL="true"/>
         <FIELD NAME="answer" TYPE="text" NOTNULL="true"/>
+        <FIELD NAME="ai_level" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1"/>
+        <FIELD NAME="subject" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="general"/>
+        <FIELD NAME="session_id" TYPE="char" LENGTH="100" NOTNULL="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="userid_subject" TYPE="notunique" FIELDS="userid, subject"/>
+        <INDEX NAME="session_id" TYPE="notunique" FIELDS="session_id"/>
+      </INDEXES>
+    </TABLE>
+    
+    <TABLE NAME="local_groqchat_user_progress" COMMENT="User progress tracking for AI balance training">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+        <FIELD NAME="subject" TYPE="char" LENGTH="50" NOTNULL="true"/>
+        <FIELD NAME="ai_level" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1"/>
+        <FIELD NAME="ai_assisted_score" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="independent_score" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="total_challenges" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="userid_subject" TYPE="unique" FIELDS="userid, subject"/>
+      </INDEXES>
+    </TABLE>
+    
+    <TABLE NAME="local_groqchat_challenges" COMMENT="Challenge tracking and completion">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+        <FIELD NAME="subject" TYPE="char" LENGTH="50" NOTNULL="true"/>
+        <FIELD NAME="challenge_type" TYPE="char" LENGTH="100" NOTNULL="true"/>
+        <FIELD NAME="challenge_data" TYPE="text" NOTNULL="false"/>
+        <FIELD NAME="ai_assistance_used" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="ai_score" TYPE="int" LENGTH="10" NOTNULL="false"/>
+        <FIELD NAME="independent_score" TYPE="int" LENGTH="10" NOTNULL="false"/>
+        <FIELD NAME="completed" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="userid_subject" TYPE="notunique" FIELDS="userid, subject"/>
+        <INDEX NAME="completed" TYPE="notunique" FIELDS="completed"/>
+      </INDEXES>
     </TABLE>
   </TABLES>
 </XMLDB>
