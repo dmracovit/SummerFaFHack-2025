@@ -16,6 +16,9 @@ $subject = optional_param('subject', 'general', PARAM_ALPHA);
 $action = optional_param('action', 'chat', PARAM_ALPHA);
 $session_id = optional_param('session_id', uniqid(), PARAM_ALPHANUMEXT);
 
+$param_topic = optional_param('topic', '', PARAM_TEXT);
+$param_material = optional_param('material', '', PARAM_TEXT);
+
 // Initialize AI Balance Trainer
 $trainer = new ai_balance_trainer($USER->id);
 

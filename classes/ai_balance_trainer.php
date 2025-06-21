@@ -108,7 +108,9 @@ class ai_balance_trainer {
      * Call AI API with level-specific constraints
      */
     private function call_ai_api($prompt, $level) {
-        $apikey = get_config('local_groqchat', 'apikey') ?: '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';
+        // $apikey = get_config('local_groqchat', 'apikey') ?: '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';
+        
+        $apikey = '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';
         
         // Adjust parameters based on level
         $temperature = $this->get_temperature_for_level($level);

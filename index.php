@@ -11,6 +11,9 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_title(get_string('pluginname', 'local_groqchat'));
 $PAGE->set_heading('AI Balance Trainer');
 
+$param_topic = optional_param('topic', '', PARAM_TEXT);
+$param_material = optional_param('material', '', PARAM_TEXT);
+
 // Add Tailwind CDN
 $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css'));
 
@@ -23,6 +26,8 @@ echo $OUTPUT->header();
         <div class="flex justify-between items-start">
             <div>
                 <h1 class="text-3xl font-bold mb-2">🎯 AI Balance Trainer</h1>
+                <h2 class="text-xl font-bold"> <?php echo $param_topic ?> </h2>
+
                 <p class="text-indigo-100">Learn to collaborate with AI effectively while maintaining your independence</p>
             </div>
             <div class="text-right">
@@ -172,8 +177,8 @@ echo $OUTPUT->header();
 </div>
 
 <script>
-// Global variables
-let currentSubject = 'programming';
+
+let currentSubject = <?php echo json_encode($param_topic ?: 'programming'); ?>;
 let currentSessionId = generateSessionId();
 let currentChallenge = null;
 
