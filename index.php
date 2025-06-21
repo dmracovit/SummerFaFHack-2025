@@ -14,16 +14,11 @@ $PAGE->set_heading('AI Balance Trainer');
 // Add Tailwind CDN
 $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css'));
 
-// Get user's current progress
-$trainer = new ai_balance_trainer($USER->id);
-$programming_progress = $trainer->get_user_progress('programming');
-$writing_progress = $trainer->get_user_progress('writing');
-
 echo $OUTPUT->header();
 ?>
 
 <div class="max-w-6xl mx-auto mt-6 space-y-6">
-    <!-- Header Section with Progress -->
+    <!-- Header Section -->
     <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6 rounded-xl shadow-lg">
         <div class="flex justify-between items-start">
             <div>
@@ -36,81 +31,14 @@ echo $OUTPUT->header();
             </div>
         </div>
     </div>
-    
-    <!-- Progress Dashboard -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Programming Progress -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-semibold text-gray-800">💻 Programming</h3>
-                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                    <?php echo ai_balance_trainer::get_level_name($programming_progress['ai_level']); ?>
-                </span>
-            </div>
-            <div class="space-y-3">
-                <div class="flex justify-between text-sm">
-                    <span>AI-Assisted Score</span>
-                    <span class="font-semibold"><?php echo $programming_progress['ai_assisted_score']; ?></span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span>Independent Score</span>
-                    <span class="font-semibold"><?php echo $programming_progress['independent_score']; ?></span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span>Total Challenges</span>
-                    <span class="font-semibold"><?php echo $programming_progress['total_challenges']; ?></span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <?php 
-                    $total_score = $programming_progress['ai_assisted_score'] + $programming_progress['independent_score'];
-                    $independence_percentage = $total_score > 0 ? ($programming_progress['independent_score'] / $total_score) * 100 : 0;
-                    ?>
-                    <div class="bg-green-500 h-2 rounded-full" style="width: <?php echo $independence_percentage; ?>%"></div>
-                </div>
-                <div class="text-xs text-gray-600">Independence: <?php echo round($independence_percentage); ?>%</div>
-            </div>
-        </div>
-        
-        <!-- Writing Progress -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-semibold text-gray-800">✍️ Writing</h3>
-                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                    <?php echo ai_balance_trainer::get_level_name($writing_progress['ai_level']); ?>
-                </span>
-            </div>
-            <div class="space-y-3">
-                <div class="flex justify-between text-sm">
-                    <span>AI-Assisted Score</span>
-                    <span class="font-semibold"><?php echo $writing_progress['ai_assisted_score']; ?></span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span>Independent Score</span>
-                    <span class="font-semibold"><?php echo $writing_progress['independent_score']; ?></span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span>Total Challenges</span>
-                    <span class="font-semibold"><?php echo $writing_progress['total_challenges']; ?></span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <?php 
-                    $total_score = $writing_progress['ai_assisted_score'] + $writing_progress['independent_score'];
-                    $independence_percentage = $total_score > 0 ? ($writing_progress['independent_score'] / $total_score) * 100 : 0;
-                    ?>
-                    <div class="bg-green-500 h-2 rounded-full" style="width: <?php echo $independence_percentage; ?>%"></div>
-                </div>
-                <div class="text-xs text-gray-600">Independence: <?php echo round($independence_percentage); ?>%</div>
-            </div>
-        </div>
-    </div>
 
     <!-- Main Interface -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Chat Interface (2/3 width) -->
         <div class="lg:col-span-2">
-            <div class="bg-white shadow-xl rounded-xl overflow-hidden h-[600px] flex flex-col">
+            <div class="bg-white shadow-xl rounded-xl overflow-hidden flex flex-col" style="height: 70vh;">
                 <!-- Chat Header -->
-                <div class="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-4 flex items-center justify-between">
+                <div class="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-4 flex items-center justify-between flex-shrink-0">
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
                             <span class="text-lg">🤖</span>
@@ -134,7 +62,7 @@ echo $OUTPUT->header();
                 </div>
 
                 <!-- Chat Messages -->
-                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 min-h-0">
                     <div class="flex items-start space-x-3">
                         <div class="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
                             <span class="text-white text-sm">🤖</span>
@@ -146,7 +74,7 @@ echo $OUTPUT->header();
                 </div>
 
                 <!-- Typing Indicator -->
-                <div id="typing-indicator" class="px-4 py-2 hidden">
+                <div id="typing-indicator" class="px-4 py-2 hidden flex-shrink-0">
                     <div class="flex items-start space-x-3">
                         <div class="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
                             <span class="text-white text-sm">🤖</span>
@@ -162,7 +90,7 @@ echo $OUTPUT->header();
                 </div>
 
                 <!-- Chat Input -->
-                <div class="border-t bg-white p-4">
+                <div class="border-t bg-white p-4 flex-shrink-0">
                     <form id="chat-form" class="flex space-x-3">
                         <textarea
                             id="message-input"
@@ -213,7 +141,7 @@ echo $OUTPUT->header();
                     <button onclick="startChallenge('writing')" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-colors">
                         Start Writing Challenge
                     </button>
-                    <button onclick="alert('Debug: Buttons are working! Progress: ' + JSON.stringify({programming: <?php echo json_encode($programming_progress); ?>, writing: <?php echo json_encode($writing_progress); ?>}))" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg transition-colors">
+                    <button onclick="window.location.href='debug.php'" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg transition-colors">
                         Debug Progress
                     </button>
                 </div>
@@ -395,7 +323,11 @@ function hideTyping() {
 
 function scrollToBottom() {
     const chatMessages = document.getElementById('chat-messages');
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    // Use smooth scrolling for better UX
+    chatMessages.scrollTo({
+        top: chatMessages.scrollHeight,
+        behavior: 'smooth'
+    });
 }
 
 function clearChat() {
@@ -517,8 +449,6 @@ async function completeChallenge() {
             alert(`Challenge completed! New level: ${data.level_name}`);
             closeChallenge();
             updateCurrentLevel();
-            // Refresh page to update progress displays
-            setTimeout(() => location.reload(), 1000);
         } else {
             alert('Error completing challenge: ' + (data.message || 'Unknown error'));
         }
