@@ -53,17 +53,7 @@ echo $OUTPUT->header();
                             <p id="current-level-display" class="text-pink-100 text-sm">Tutor Mode</p>
                         </div>
                     </div>
-                    <div class="flex space-x-2">
-                        <select id="subject-selector" class="bg-white bg-opacity-20 text-white rounded px-3 py-1 text-sm">
-                            <option value="programming">💻 Programming</option>
-                            <option value="writing">✍️ Writing</option>
-                            <option value="math">🔢 Math</option>
-                            <option value="general">🎯 General</option>
-                        </select>
-                        <button id="clear-chat" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded text-sm transition-all">
-                            Clear
-                        </button>
-                    </div>
+                   
                 </div>
 
                 <!-- Chat Messages -->
@@ -73,7 +63,7 @@ echo $OUTPUT->header();
                             <span class="text-white text-sm">🤖</span>
                         </div>
                         <div class="bg-white p-3 rounded-lg shadow-sm max-w-md">
-                            <p class="text-gray-700">Welcome to AI Balance Trainer! I'm here to help you learn to collaborate with AI effectively. Choose a subject and start asking questions!</p>
+                            <p class="text-gray-700">Welcome to AI Balance Trainer! I'm here to help you learn to collaborate with AI effectively on topic <i> <?php echo $param_topic ?> </i> </p>
                         </div>
                     </div>
                 </div>
