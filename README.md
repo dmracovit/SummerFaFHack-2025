@@ -54,3 +54,13 @@ AI Balance Trainer is an educational tool that implements a **5-level progressio
 - **API Settings**: Configure Groq API key and model selection
 - **Training Parameters**: Adjust independence thresholds (20%, 40%, 60%, 80%)
 - **Logging Options**: Set retention policies and logging preferences
+
+## How to run:
+
+1) Install Moodle server following the [instructions](https://download.moodle.org/) 
+
+2) Branch `main` contains the main AI page on which the chat is displayed. The contents of this branch should be inserted into `pathToMoodle/server/moodle/local/aitrainer`
+
+3) Branch `andrei` contains the the AI activity component which can be inserted on a course. The contents of this branch should be inserted into `pathToMoodle/server/moodle/mod/aiassistant`
+
+4) Run the Moodle server following the instructions for your system from the official [guide](https://docs.moodle.org/500/en/Main_page)
