@@ -1,5 +1,5 @@
 <?php
-// File path: index.php (REPLACE existing index.php)
+// File path: index.php (REPLACE existing index.php - FIXED VERSION)
 
 require('../../config.php');
 require_login();
@@ -203,60 +203,18 @@ echo $OUTPUT->header();
                 </div>
             </div>
 
-            <!-- AI Level Progression -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">📈 Level Progression</h3>
-                <div class="space-y-3">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold">1</div>
-                        <div class="flex-1">
-                            <div class="font-medium text-sm">Tutor Mode</div>
-                            <div class="text-xs text-gray-500">Full guidance</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">2</div>
-                        <div class="flex-1">
-                            <div class="font-medium text-sm">Partner Mode</div>
-                            <div class="text-xs text-gray-500">Collaborative</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white text-sm font-bold">3</div>
-                        <div class="flex-1">
-                            <div class="font-medium text-sm">Assistant Mode</div>
-                            <div class="text-xs text-gray-500">Hints & suggestions</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold">4</div>
-                        <div class="flex-1">
-                            <div class="font-medium text-sm">Validator Mode</div>
-                            <div class="text-xs text-gray-500">Feedback only</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">5</div>
-                        <div class="flex-1">
-                            <div class="font-medium text-sm">Independent Mode</div>
-                            <div class="text-xs text-gray-500">Minimal assistance</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Quick Actions -->
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <h3 class="text-lg font-semibold mb-4">⚡ Quick Actions</h3>
                 <div class="space-y-3">
-                    <button id="start-coding-challenge" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors">
+                    <button onclick="startChallenge('coding')" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors">
                         Start Coding Challenge
                     </button>
-                    <button id="start-writing-challenge" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-colors">
+                    <button onclick="startChallenge('writing')" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-colors">
                         Start Writing Challenge
                     </button>
-                    <button id="view-progress" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg transition-colors">
-                        View Detailed Progress
+                    <button onclick="alert('Debug: Buttons are working! Progress: ' + JSON.stringify({programming: <?php echo json_encode($programming_progress); ?>, writing: <?php echo json_encode($writing_progress); ?>}))" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg transition-colors">
+                        Debug Progress
                     </button>
                 </div>
             </div>
@@ -265,11 +223,11 @@ echo $OUTPUT->header();
 </div>
 
 <!-- Challenge Modal -->
-<div id="challenge-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+<div id="challenge-modal" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-xl max-w-2xl w-full mx-4 p-6">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-semibold" id="challenge-title">Challenge</h3>
-            <button id="close-challenge" class="text-gray-500 hover:text-gray-700">
+            <button onclick="closeChallenge()" class="text-gray-500 hover:text-gray-700">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -279,8 +237,8 @@ echo $OUTPUT->header();
             <!-- Challenge content will be loaded here -->
         </div>
         <div class="flex justify-end space-x-3">
-            <button id="cancel-challenge" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
-            <button id="complete-challenge" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">Mark Complete</button>
+            <button onclick="closeChallenge()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+            <button onclick="completeChallenge()" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">Mark Complete</button>
         </div>
     </div>
 </div>
@@ -291,22 +249,24 @@ let currentSubject = 'programming';
 let currentSessionId = generateSessionId();
 let currentChallenge = null;
 
-// DOM elements
-const chatMessages = document.getElementById('chat-messages');
-const messageInput = document.getElementById('message-input');
-const sendButton = document.getElementById('send-button');
-const typingIndicator = document.getElementById('typing-indicator');
-const clearButton = document.getElementById('clear-chat');
-const subjectSelector = document.getElementById('subject-selector');
-const challengeModal = document.getElementById('challenge-modal');
-
-// Initialize
+// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    updateCurrentLevel();
-    setupEventListeners();
+    console.log('AI Balance Trainer: DOM loaded, initializing...');
+    initializePlugin();
 });
 
+function initializePlugin() {
+    updateCurrentLevel();
+    setupEventListeners();
+    console.log('AI Balance Trainer: Initialization complete');
+}
+
 function setupEventListeners() {
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const clearButton = document.getElementById('clear-chat');
+    const subjectSelector = document.getElementById('subject-selector');
+
     // Auto-resize textarea
     messageInput.addEventListener('input', function() {
         this.style.height = 'auto';
@@ -317,13 +277,14 @@ function setupEventListeners() {
     messageInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+            handleChatSubmission(e);
         }
     });
 
     // Subject change
     subjectSelector.addEventListener('change', function() {
         currentSubject = this.value;
+        console.log('Subject changed to:', currentSubject);
         updateCurrentLevel();
     });
 
@@ -332,23 +293,24 @@ function setupEventListeners() {
 
     // Clear chat
     clearButton.addEventListener('click', clearChat);
-
-    // Challenge buttons
-    document.getElementById('start-coding-challenge').addEventListener('click', () => startChallenge('coding'));
-    document.getElementById('start-writing-challenge').addEventListener('click', () => startChallenge('writing'));
-    document.getElementById('view-progress').addEventListener('click', viewProgress);
-
-    // Modal events
-    document.getElementById('close-challenge').addEventListener('click', closeChallenge);
-    document.getElementById('cancel-challenge').addEventListener('click', closeChallenge);
-    document.getElementById('complete-challenge').addEventListener('click', completeChallenge);
+    
+    console.log('Event listeners set up successfully');
 }
 
 async function handleChatSubmission(e) {
     e.preventDefault();
+    console.log('Chat submission triggered');
     
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
     const question = messageInput.value.trim();
-    if (!question) return;
+    
+    if (!question) {
+        console.log('Empty question, skipping');
+        return;
+    }
+    
+    console.log('Sending question:', question, 'Subject:', currentSubject);
     
     // Add user message
     addMessage(question, true);
@@ -362,22 +324,29 @@ async function handleChatSubmission(e) {
     showTyping();
     
     try {
-        const response = await fetch(`api.php?action=chat&question=${encodeURIComponent(question)}&subject=${currentSubject}&session_id=${currentSessionId}`);
+        const url = `api.php?action=chat&question=${encodeURIComponent(question)}&subject=${currentSubject}&session_id=${currentSessionId}`;
+        console.log('API URL:', url);
+        
+        const response = await fetch(url);
         const data = await response.json();
+        
+        console.log('API Response:', data);
         
         hideTyping();
         
         if (data.error) {
-            addMessage('Sorry, I encountered an error. Please try again.', false);
+            addMessage('Sorry, I encountered an error: ' + (data.message || 'Unknown error'), false);
         } else {
             addMessage(data.answer, false);
-            updateLevelDisplay(data.ai_level, data.level_name, data.level_description);
+            if (data.ai_level) {
+                updateLevelDisplay(data.ai_level, data.level_name, data.level_description);
+            }
         }
         
     } catch (error) {
         console.error('Fetch error:', error);
         hideTyping();
-        addMessage('Sorry, I couldn\'t connect to the server. Please try again.', false);
+        addMessage('Sorry, I couldn\'t connect to the server. Please try again. Error: ' + error.message, false);
     }
     
     sendButton.disabled = false;
@@ -385,8 +354,12 @@ async function handleChatSubmission(e) {
 }
 
 function addMessage(content, isUser = false) {
+    const chatMessages = document.getElementById('chat-messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `flex items-start space-x-3 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
+    
+    // Format content with line breaks
+    const formattedContent = content.replace(/\n/g, '<br>');
     
     const avatarClass = isUser 
         ? 'w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0'
@@ -403,7 +376,7 @@ function addMessage(content, isUser = false) {
             <span class="text-white text-sm">${avatarIcon}</span>
         </div>
         <div class="${messageClass}">
-            <p class="${isUser ? 'text-white' : 'text-gray-700'}">${content}</p>
+            <div class="${isUser ? 'text-white' : 'text-gray-700'}">${formattedContent}</div>
         </div>
     `;
     
@@ -412,20 +385,22 @@ function addMessage(content, isUser = false) {
 }
 
 function showTyping() {
-    typingIndicator.classList.remove('hidden');
+    document.getElementById('typing-indicator').classList.remove('hidden');
     scrollToBottom();
 }
 
 function hideTyping() {
-    typingIndicator.classList.add('hidden');
+    document.getElementById('typing-indicator').classList.add('hidden');
 }
 
 function scrollToBottom() {
+    const chatMessages = document.getElementById('chat-messages');
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 function clearChat() {
     if (confirm('Are you sure you want to clear the chat history?')) {
+        const chatMessages = document.getElementById('chat-messages');
         chatMessages.innerHTML = `
             <div class="flex items-start space-x-3">
                 <div class="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
@@ -445,7 +420,9 @@ async function updateCurrentLevel() {
         const response = await fetch(`api.php?action=get_progress&subject=${currentSubject}`);
         const data = await response.json();
         
-        if (!data.error) {
+        console.log('Progress data:', data);
+        
+        if (!data.error && data.progress) {
             updateLevelDisplay(data.progress.ai_level, data.level_name, data.level_description);
         }
     } catch (error) {
@@ -458,34 +435,33 @@ function updateLevelDisplay(level, levelName, levelDescription) {
     document.getElementById('current-level-name').textContent = levelName;
     document.getElementById('current-level-description').textContent = levelDescription;
     
-    // Update progress indicators
-    const indicators = document.querySelectorAll('.level-indicator');
-    indicators.forEach((indicator, index) => {
-        if (index < level) {
-            indicator.classList.add('bg-green-500');
-            indicator.classList.remove('bg-gray-300');
-        } else {
-            indicator.classList.add('bg-gray-300');
-            indicator.classList.remove('bg-green-500');
-        }
-    });
+    console.log('Level display updated:', level, levelName);
 }
 
 async function startChallenge(type) {
+    console.log('Starting challenge:', type, 'for subject:', currentSubject);
+    
     try {
         const response = await fetch(`api.php?action=start_challenge&challenge_type=${type}&subject=${currentSubject}`);
         const data = await response.json();
         
-        if (!data.error) {
+        console.log('Challenge data:', data);
+        
+        if (!data.error && data.challenge) {
             currentChallenge = data.challenge;
             showChallengeModal(data.challenge);
+        } else {
+            alert('Error starting challenge: ' + (data.message || 'Unknown error'));
         }
     } catch (error) {
         console.error('Error starting challenge:', error);
+        alert('Error starting challenge: ' + error.message);
     }
 }
 
 function showChallengeModal(challenge) {
+    console.log('Showing challenge modal:', challenge);
+    
     document.getElementById('challenge-title').textContent = challenge.title;
     document.getElementById('challenge-content').innerHTML = `
         <div class="space-y-4">
@@ -512,18 +488,19 @@ function showChallengeModal(challenge) {
         </div>
     `;
     
-    challengeModal.classList.remove('hidden');
-    challengeModal.classList.add('flex');
+    document.getElementById('challenge-modal').style.display = 'flex';
 }
 
 function closeChallenge() {
-    challengeModal.classList.add('hidden');
-    challengeModal.classList.remove('flex');
+    document.getElementById('challenge-modal').style.display = 'none';
     currentChallenge = null;
 }
 
 async function completeChallenge() {
-    if (!currentChallenge) return;
+    if (!currentChallenge) {
+        alert('No active challenge');
+        return;
+    }
     
     const aiScore = prompt("Rate how much you used AI assistance (0-10):");
     const independentScore = prompt("Rate how much you solved independently (0-10):");
@@ -534,28 +511,51 @@ async function completeChallenge() {
         const response = await fetch(`api.php?action=complete_challenge&subject=${currentSubject}&ai_score=${aiScore}&independent_score=${independentScore}`);
         const data = await response.json();
         
+        console.log('Challenge completion result:', data);
+        
         if (data.success) {
             alert(`Challenge completed! New level: ${data.level_name}`);
             closeChallenge();
             updateCurrentLevel();
-            location.reload(); // Refresh to update progress displays
+            // Refresh page to update progress displays
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            alert('Error completing challenge: ' + (data.message || 'Unknown error'));
         }
     } catch (error) {
         console.error('Error completing challenge:', error);
+        alert('Error completing challenge: ' + error.message);
     }
-}
-
-function viewProgress() {
-    // Redirect to a dedicated progress page or show detailed modal
-    alert('Detailed progress view coming soon!');
 }
 
 function generateSessionId() {
     return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 }
 
+// Debug function
+function debugAPI() {
+    console.log('Testing API endpoints...');
+    
+    fetch('api.php?action=get_progress&subject=programming')
+        .then(r => r.json())
+        .then(data => console.log('Progress API test:', data))
+        .catch(e => console.error('Progress API error:', e));
+        
+    fetch('api.php?action=start_challenge&challenge_type=coding&subject=programming')
+        .then(r => r.json())
+        .then(data => console.log('Challenge API test:', data))
+        .catch(e => console.error('Challenge API error:', e));
+}
+
 // Focus on input when page loads
-messageInput.focus();
+document.addEventListener('DOMContentLoaded', function() {
+    const messageInput = document.getElementById('message-input');
+    if (messageInput) {
+        messageInput.focus();
+    }
+});
+
+console.log('AI Balance Trainer: Script loaded successfully');
 </script>
 
 <?php

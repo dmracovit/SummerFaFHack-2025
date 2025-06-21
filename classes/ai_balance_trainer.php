@@ -1,5 +1,5 @@
 <?php
-// File path: classes/ai_balance_trainer.php
+// File path: classes/ai_balance_trainer.php (REPLACE existing - FIXED VERSION)
 
 namespace local_groqchat;
 
@@ -9,8 +9,8 @@ class ai_balance_trainer {
     const LEVEL_TUTOR = 1;        // Full guidance and explanations
     const LEVEL_PARTNER = 2;      // Collaborative problem solving
     const LEVEL_ASSISTANT = 3;    // Helpful hints and suggestions
-    const LEVEL_VALIDATOR = 4;    
-    const LEVEL_INDEPENDENT = 5;  
+    const LEVEL_VALIDATOR = 4;    // Feedback and validation only
+    const LEVEL_INDEPENDENT = 5;  // Minimal to no assistance
     
     // Subject types
     const SUBJECT_PROGRAMMING = 'programming';
@@ -80,23 +80,24 @@ class ai_balance_trainer {
      * Build prompts based on assistance level
      */
     private function build_level_specific_prompt($question, $level, $subject, $context) {
-        $base_context = "Subject: {$subject}. Context: {$context}. Student question: {$question}";
+        $base_context = !empty($context) ? "Context: {$context}. " : "";
+        $base_context .= "Subject: {$subject}. Student question: {$question}";
         
         switch ($level) {
             case self::LEVEL_TUTOR:
-                return "Act as a detailed tutor. Provide step-by-step explanations, examples, and guide the student through the complete solution. " . $base_context;
+                return "You are a helpful tutor. Provide clear, step-by-step guidance in 2-3 short paragraphs maximum. Use simple language and include a brief example if helpful. Keep responses concise but educational. " . $base_context;
                 
             case self::LEVEL_PARTNER:
-                return "Act as a collaborative partner. Work together with the student, ask guiding questions, and provide assistance when they get stuck. Don't give direct answers immediately. " . $base_context;
+                return "You are a study partner. Ask 1-2 guiding questions to help the student think through the problem. Give hints but don't solve it directly. Keep response to 1-2 paragraphs maximum. " . $base_context;
                 
             case self::LEVEL_ASSISTANT:
-                return "Act as a helpful assistant. Provide hints, point to relevant concepts, and give suggestions without solving the problem directly. " . $base_context;
+                return "You are a helpful assistant. Provide brief hints or point to relevant concepts in 1 paragraph maximum. Don't give complete solutions. Be concise. " . $base_context;
                 
             case self::LEVEL_VALIDATOR:
-                return "Act as a validator. Only provide feedback on the student's approach or solution. Point out errors or confirm correctness, but don't provide new information unless specifically asked. " . $base_context;
+                return "You are a validator. Only provide brief feedback on the student's approach. Point out errors or confirm correctness in 2-3 sentences maximum. Don't provide new information unless asked. " . $base_context;
                 
             case self::LEVEL_INDEPENDENT:
-                return "Act minimally. Only respond if the student is completely stuck or asks for clarification on basic concepts. Encourage independent thinking. " . $base_context;
+                return "You provide minimal help. Only respond if the student is completely stuck with basic concepts. Keep to 1-2 sentences maximum. Encourage independent thinking. " . $base_context;
                 
             default:
                 return $base_context;
@@ -109,15 +110,17 @@ class ai_balance_trainer {
     private function call_ai_api($prompt, $level) {
         $apikey = get_config('local_groqchat', 'apikey') ?: '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';
         
-        // Adjust temperature based on level
+        // Adjust parameters based on level
         $temperature = $this->get_temperature_for_level($level);
+        $max_tokens = $this->get_max_tokens_for_level($level);
         
         $curl = curl_init('https://api.groq.com/openai/v1/chat/completions');
         $postfields = json_encode([
             'model' => 'llama-3.1-8b-instant',
             'messages' => [['role' => 'user', 'content' => $prompt]],
             'temperature' => $temperature,
-            'max_tokens' => $this->get_max_tokens_for_level($level)
+            'max_tokens' => $max_tokens,
+            'stop' => ['\n\n\n', '---'] // Additional stop sequences to limit length
         ]);
 
         curl_setopt_array($curl, [
@@ -127,14 +130,66 @@ class ai_balance_trainer {
                 'Content-Type: application/json'
             ],
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $postfields
+            CURLOPT_POSTFIELDS => $postfields,
+            CURLOPT_TIMEOUT => 30
         ]);
 
         $response = curl_exec($curl);
+        $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
         
+        if ($http_code !== 200) {
+            return 'Error: Could not get AI response (HTTP ' . $http_code . ')';
+        }
+        
         $json = json_decode($response, true);
-        return $json['choices'][0]['message']['content'] ?? 'Error: Could not get AI response';
+        
+        if (!isset($json['choices'][0]['message']['content'])) {
+            return 'Error: Invalid API response format';
+        }
+        
+        $content = $json['choices'][0]['message']['content'];
+        
+        // Additional post-processing to ensure conciseness
+        return $this->post_process_response($content, $level);
+    }
+    
+    /**
+     * Post-process response to ensure it meets level requirements
+     */
+    private function post_process_response($content, $level) {
+        // Remove excessive whitespace and normalize line breaks
+        $content = preg_replace('/\n{3,}/', "\n\n", $content);
+        $content = trim($content);
+        
+        // Character limits for additional safety
+        $char_limits = [
+            self::LEVEL_TUTOR => 500,
+            self::LEVEL_PARTNER => 350, 
+            self::LEVEL_ASSISTANT => 250,
+            self::LEVEL_VALIDATOR => 150,
+            self::LEVEL_INDEPENDENT => 100
+        ];
+        
+        $limit = $char_limits[$level] ?? 350;
+        
+        if (strlen($content) > $limit) {
+            // Find the best place to cut off
+            $content = substr($content, 0, $limit);
+            $last_sentence = max(
+                strrpos($content, '.'),
+                strrpos($content, '!'),
+                strrpos($content, '?')
+            );
+            
+            if ($last_sentence !== false && $last_sentence > $limit * 0.6) {
+                $content = substr($content, 0, $last_sentence + 1);
+            } else {
+                $content = substr($content, 0, $limit - 3) . '...';
+            }
+        }
+        
+        return $content;
     }
     
     /**
@@ -147,7 +202,7 @@ class ai_balance_trainer {
             case self::LEVEL_ASSISTANT: return 0.7; // More varied suggestions
             case self::LEVEL_VALIDATOR: return 0.2; // Very consistent feedback
             case self::LEVEL_INDEPENDENT: return 0.1; // Minimal, consistent responses
-            default: return 0.7;
+            default: return 0.5;
         }
     }
     
@@ -156,12 +211,12 @@ class ai_balance_trainer {
      */
     private function get_max_tokens_for_level($level) {
         switch ($level) {
-            case self::LEVEL_TUTOR: return 800; // Detailed explanations
-            case self::LEVEL_PARTNER: return 400; // Moderate responses
-            case self::LEVEL_ASSISTANT: return 300; // Brief hints
-            case self::LEVEL_VALIDATOR: return 200; // Short feedback
-            case self::LEVEL_INDEPENDENT: return 100; // Minimal responses
-            default: return 400;
+            case self::LEVEL_TUTOR: return 150; // Detailed but limited
+            case self::LEVEL_PARTNER: return 100; // Moderate responses
+            case self::LEVEL_ASSISTANT: return 75; // Brief hints
+            case self::LEVEL_VALIDATOR: return 50; // Short feedback
+            case self::LEVEL_INDEPENDENT: return 30; // Minimal responses
+            default: return 100;
         }
     }
     
@@ -176,7 +231,7 @@ class ai_balance_trainer {
         $new_total = $progress['total_challenges'] + ($challenge_completed ? 1 : 0);
         
         // Calculate if user should level up
-        $new_level = $this->calculate_level_progression($new_ai_score, $new_independent_score, $new_total);
+        $new_level = $this->calculate_level_progression($new_ai_score, $new_independent_score, $new_total, $progress['ai_level']);
         
         $record = [
             'userid' => $this->userid,
@@ -207,25 +262,30 @@ class ai_balance_trainer {
     /**
      * Calculate AI level progression based on performance
      */
-    private function calculate_level_progression($ai_score, $independent_score, $total_challenges) {
-        if ($total_challenges < 3) {
+    private function calculate_level_progression($ai_score, $independent_score, $total_challenges, $current_level) {
+        if ($total_challenges < 2) {
             return self::LEVEL_TUTOR; // Need minimum challenges
         }
         
-        $independence_ratio = $total_challenges > 0 ? $independent_score / ($ai_score + $independent_score + 1) : 0;
+        $total_score = $ai_score + $independent_score;
+        $independence_ratio = $total_score > 0 ? $independent_score / $total_score : 0;
         
-        // Level progression thresholds
-        if ($independence_ratio >= 0.8 && $total_challenges >= 10) {
-            return self::LEVEL_INDEPENDENT;
-        } elseif ($independence_ratio >= 0.6 && $total_challenges >= 8) {
-            return self::LEVEL_VALIDATOR;
-        } elseif ($independence_ratio >= 0.4 && $total_challenges >= 6) {
-            return self::LEVEL_ASSISTANT;
-        } elseif ($independence_ratio >= 0.2 && $total_challenges >= 4) {
-            return self::LEVEL_PARTNER;
-        } else {
-            return self::LEVEL_TUTOR;
+        // Level progression thresholds (configurable via settings)
+        $thresholds = [
+            self::LEVEL_PARTNER => ['ratio' => 0.2, 'challenges' => 3],
+            self::LEVEL_ASSISTANT => ['ratio' => 0.4, 'challenges' => 5],
+            self::LEVEL_VALIDATOR => ['ratio' => 0.6, 'challenges' => 7],
+            self::LEVEL_INDEPENDENT => ['ratio' => 0.8, 'challenges' => 10]
+        ];
+        
+        // Start from highest level and work down
+        foreach (array_reverse($thresholds, true) as $level => $requirements) {
+            if ($independence_ratio >= $requirements['ratio'] && $total_challenges >= $requirements['challenges']) {
+                return max($level, $current_level); // Don't allow level regression
+            }
         }
+        
+        return max(self::LEVEL_TUTOR, $current_level); // Don't allow level regression
     }
     
     /**
@@ -248,15 +308,15 @@ class ai_balance_trainer {
     public static function get_level_description($level) {
         switch ($level) {
             case self::LEVEL_TUTOR: 
-                return 'AI provides detailed step-by-step guidance and explanations';
+                return 'AI provides detailed step-by-step guidance';
             case self::LEVEL_PARTNER: 
-                return 'AI collaborates with you, asking guiding questions';
+                return 'AI collaborates with guiding questions';
             case self::LEVEL_ASSISTANT: 
                 return 'AI provides helpful hints and suggestions';
             case self::LEVEL_VALIDATOR: 
                 return 'AI only provides feedback and validation';
             case self::LEVEL_INDEPENDENT: 
-                return 'Minimal AI assistance - you work independently';
+                return 'Minimal AI assistance - work independently';
             default: 
                 return '';
         }
