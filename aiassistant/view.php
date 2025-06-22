@@ -18,18 +18,19 @@ $PAGE->set_heading($course->fullname);
 // $material = "Neural networks are a class of models within the general machine learning literature. They are inspired by the structure of the human brain and are particularly powerful for recognizing patterns, learning from data, and enabling AI systems to make decisions.";
 
 // Get topic/material from session (passed from lib.php)
-$topic = $_SESSION['ai_temp_topic'][$cm->instance] ?? 'No topic provided';
-$material = $_SESSION['ai_temp_material'][$cm->instance] ?? 'No content available';
+$instance = $DB->get_record('aiassistant', ['id' => $cm->instance], '*', MUST_EXIST);
+$name = format_string($instance->name) ?? 'No name provided';
+$topic = format_text($instance->topic, FORMAT_HTML) ?? 'No topic provided';
+$material = format_text($instance->material, FORMAT_HTML) ?? 'No content available';
 
-
-$url = new moodle_url('/local/groqchat/');
+$url = new moodle_url('/local/groqchat/?topic=' . urlencode($topic) . '&material=' . urlencode($material) . '&cmid=' . $cm->id);
 
 echo $OUTPUT->header();
 
 echo html_writer::start_div('aiassistant-container', ['style' => 'max-width: 800px; margin: 0 auto; padding: 30px; background: #f9f9f9; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);']);
 
-echo html_writer::tag('h2', $topic, ['style' => 'font-size: 28px; color: #2c3e50; margin-bottom: 20px;']);
-
+echo html_writer::tag('h2', $name, ['style' => 'font-size: 28px; color: #2c3e50; margin-bottom: 10px;']);
+echo html_writer::tag('h3', $topic, ['style' => 'font-size: 22px; color: #34495e; margin-bottom: 20px;']);
 echo html_writer::tag('div', $material, ['style' => 'font-size: 18px; line-height: 1.6; color: #333; margin-bottom: 30px;']);
 
 // echo $OUTPUT->single_button($url, get_string('launchbutton', 'aiassistant'), 'get', [

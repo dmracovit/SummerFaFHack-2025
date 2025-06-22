@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/aiassistant/db" VERSION="2025062100" COMMENT="Install XMLDB file for AI Assistant">
+<XMLDB PATH="mod/aiassistant/db" VERSION="2025062201" COMMENT="Install XMLDB file for AI Assistant">
   <TABLES>
     <TABLE NAME="aiassistant" COMMENT="Stores AI Assistant activity instances">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT=""/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT=""/>
+        <FIELD NAME="topic" TYPE="text" NOTNULL="true" DEFAULT=""/>
+        <FIELD NAME="material" TYPE="text" NOTNULL="false" DEFAULT=""/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="course" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id"/>
       </KEYS>
-      <INDEXES>
-        <INDEX NAME="course_idx" UNIQUE="false" FIELDS="course"/>
-      </INDEXES>
     </TABLE>
   </TABLES>
 </XMLDB>
