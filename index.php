@@ -26,48 +26,35 @@ echo $OUTPUT->header();
     --bg-primary: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
     --bg-secondary: #ffffff;
     --text-primary: #000000;
-    --text-secondary: rgb(147, 163, 185);
-    --border-color: #e5e7eb;
-    --chat-bg: #f9fafb;
-    --accent-primary: #3b82f6;
-    --accent-secondary: #8b5cf6;
-    --button-hover: #2563eb;
-    --shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+    --text-secondary: #4b5563;
+    --border-color: #d1d5db;
+    --chat-bg: #ffffff;
+    --accent-primary: #3b82f6; /* blue */
+    --accent-secondary: #8b5cf6; /* violet */
+    --button-hover: #6366f1;
+    --shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
 }
 
-[data-theme="socrates"] {
-    --bg-primary: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    --bg-secondary: #262626;
-    --text-primary: #ffffff;
-    --text-secondary: #f4b47c;
-    --border-color: #404040;
-    --chat-bg: #2d2d2d;
-    --accent-primary: rgb(242, 79, 58);
-    --accent-secondary: rgb(250, 110, 54);
-    --button-hover: rgb(238, 99, 29);
-    --shadow: 0 4px 20px rgba(234, 88, 12, 0.1);
-}
-
-/* Socratic Chat Custom Theme (always dark/orange) */
+[data-theme="socrates"],
 .socratic-theme {
-    --bg-primary: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    --bg-secondary: #262626;
-    --text-primary: #ffffff;
-    --text-secondary: #f4b47c;
-    --border-color: #404040;
-    --chat-bg: #2d2d2d;
-    --accent-primary: rgb(242, 79, 58);
-    --accent-secondary: rgb(250, 110, 54);
-    --button-hover: rgb(238, 99, 29);
-    --shadow: 0 4px 20px rgba(234, 88, 12, 0.1);
+    --bg-primary: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
+    --bg-secondary: #ffffff;
+    --text-primary: #000000;
+    --text-secondary: #4b5563;
+    --border-color: #d1d5db;
+    --chat-bg: #ffffff;
+    --accent-primary: #3b82f6; /* blue */
+    --accent-secondary: #8b5cf6; /* violet */
+    --button-hover: #6366f1;
+    --shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
 }
 
-/* Visual Novel Socrates UI */
+/* Updated Socratic Visual Novel UI (light with blue/violet accents) */
 .socratic-vn-bg {
-    background: linear-gradient(135deg, #181818 60%, #2d2d2d 100%);
+    background: linear-gradient(135deg, #ffffff 60%, #f3e8ff 100%);
     border-radius: 24px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.45);
-    border: 2px solid #f97316;
+    box-shadow: 0 8px 32px rgba(95, 92, 246, 0.25);
+    border: 2px solidrgb(92, 118, 246);
     position: relative;
     overflow: hidden;
 }
@@ -75,22 +62,22 @@ echo $OUTPUT->header();
     width: 96px;
     height: 96px;
     border-radius: 50%;
-    border: 4px solid #f97316;
-    background: #181818;
+    border: 4px solidrgb(97, 92, 246);
+    background: #ffffff;
     object-fit: cover;
-    box-shadow: 0 4px 16px rgba(250,110,54,0.25);
+    box-shadow: 0 4px 16px rgba(92, 105, 246, 0.25);
 }
 .socratic-vn-bubble {
-    background: rgba(34, 34, 34, 0.98);
-    color: #fff;
+    background: rgba(243, 244, 246, 0.95);
+    color: #000;
     border-radius: 18px 18px 18px 0;
     padding: 22px 28px;
     font-size: 1.15rem;
     font-family: 'Georgia', serif;
     margin-left: 24px;
     margin-bottom: 8px;
-    box-shadow: 0 2px 12px rgba(250,110,54,0.10);
-    border: 2px solid #f97316;
+    box-shadow: 0 2px 12px rgba(92, 92, 246, 0.1);
+    border: 2px solidrgb(102, 92, 246);
     max-width: 80%;
     position: relative;
 }
@@ -103,19 +90,13 @@ echo $OUTPUT->header();
     height: 0;
     border-top: 18px solid transparent;
     border-bottom: 18px solid transparent;
-    border-right: 18px solid #222;
-    filter: drop-shadow(-2px 0 0 #f97316);
-}
-.socratic-vn-log {
-    max-height: 320px;
-    overflow-y: auto;
-    padding: 0 8px;
-    margin-bottom: 12px;
+    border-right: 18px solid #f3f4f6;
+    filter: drop-shadow(-2px 0 0 #8b5cf6);
 }
 .socratic-vn-input {
-    background: #232323;
-    color: #fff;
-    border: 2px solid #f97316;
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #8b5cf6;
     border-radius: 12px;
     padding: 14px 18px;
     font-size: 1rem;
@@ -124,19 +105,23 @@ echo $OUTPUT->header();
     margin-right: 12px;
 }
 .socratic-vn-send {
-    background: linear-gradient(135deg, #f97316, #fa6e36);
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
     color: #fff;
     border: none;
     border-radius: 12px;
     padding: 12px 28px;
     font-weight: bold;
     font-size: 1rem;
-    box-shadow: 0 2px 8px rgba(250,110,54,0.15);
+    box-shadow: 0 2px 8px rgba(139,92,246,0.15);
     transition: background 0.2s;
 }
 .socratic-vn-send:hover {
-    background: linear-gradient(135deg, #fa6e36, #f97316);
+    background: linear-gradient(135deg, #6366f1, #7c3aed);
 }
+.socratic-vn-bg::-webkit-scrollbar-thumb {
+    background: #8b5cf6;
+}
+
 .socratic-vn-bottom {
     width: 100%;
     display: flex;
@@ -154,7 +139,7 @@ echo $OUTPUT->header();
 
 /* Base Styles */
 body {
-    background: #ffffff;
+    background: #ffffff);
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
     transition: all 0.3s ease;
@@ -224,17 +209,17 @@ body {
 }
 </style>
 
-<div class="max-w-6xl mx-auto mt-6 space-y-6">
+<div class="max-w-6xl mx-auto mt-1 space-y-6">
     <!-- Header Section -->
-    <div class="themed-bg-gradient text-white p-6 rounded-xl shadow-lg">
+    <div class="themed-bg-gradient text-white px-3 py-3 rounded-xl shadow-lg">
         <div class="flex justify-between items-start">
             <div>
-                <h1 class="text-3xl font-bold mb-2">🎯 AI Balance Trainer</h1>
-                <h2 class="text-xl font-semibold"><?php echo htmlspecialchars($param_topic) ?></h2>
-                <p class="text-blue-100">Master AI collaboration while staying independent</p>
+                <h1 class="text-xl font-bold mb-1">🎯 AI Balance Trainer</h1>
+                <h2 class="text-base font-semibold leading-tight"><?php echo htmlspecialchars($param_topic) ?></h2>
+                <p class="text-blue-100 text-xs">Master AI collaboration while staying independent</p>
             </div>
             <div class="text-right">
-                <div class="text-sm text-blue-200">Layer 1: AI Collaboration Training</div>
+                <div class="text-xs text-blue-200">Layer 1: AI Collaboration Training</div>
                 <div class="text-xs text-blue-300">Version 1.2</div>
             </div>
         </div>
@@ -243,10 +228,10 @@ body {
     <!-- Main Interface: Socrates Chat in center, AI Assistant on right -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Socrates Bubble Interface (center, 2/3 width) -->
-        <div class="lg:col-span-2 flex flex-col items-center justify-center" id="socrates-chat" style="height: 70vh;">
-            <div class="socratic-vn-bg w-full max-w-2xl flex flex-col items-center justify-end h-full p-0 relative">
+        <div class="lg:col-span-2 flex flex-col items-center" id="socrates-chat">
+            <div class="socratic-vn-bg w-full max-w-2xl flex flex-col items-center p-0 relative" style="height: 420px; min-height: 320px;">
                 <!-- Dialogue Log -->
-                <div id="socrates-vn-log" class="socratic-vn-log w-full flex flex-col justify-end">
+                <div id="socrates-vn-log" class="socratic-vn-log w-full flex flex-col justify-start" style="flex:1; overflow-y:auto; max-height:340px;">
                     <div class="flex items-end mb-2">
                         <img src="https://cloak.romanbaths.co.uk/images/characters/haruspex-talking.gif" alt="Socrates Talking" class="socratic-vn-avatar mr-2" />
                         <div class="socratic-vn-bubble" id="socrates-bubble-text">
