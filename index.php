@@ -26,7 +26,7 @@ echo $OUTPUT->header();
     --bg-primary: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
     --bg-secondary: #ffffff;
     --text-primary: #000000;
-    --text-secondary:rgb(147, 163, 185);
+    --text-secondary: rgb(147, 163, 185);
     --border-color: #e5e7eb;
     --chat-bg: #f9fafb;
     --accent-primary: #3b82f6;
@@ -42,10 +42,114 @@ echo $OUTPUT->header();
     --text-secondary: #f4b47c;
     --border-color: #404040;
     --chat-bg: #2d2d2d;
-    --accent-primary:rgb(242, 79, 58);
-    --accent-secondary:rgb(250, 110, 54);
-    --button-hover:rgb(238, 99, 29);
+    --accent-primary: rgb(242, 79, 58);
+    --accent-secondary: rgb(250, 110, 54);
+    --button-hover: rgb(238, 99, 29);
     --shadow: 0 4px 20px rgba(234, 88, 12, 0.1);
+}
+
+/* Socratic Chat Custom Theme (always dark/orange) */
+.socratic-theme {
+    --bg-primary: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    --bg-secondary: #262626;
+    --text-primary: #ffffff;
+    --text-secondary: #f4b47c;
+    --border-color: #404040;
+    --chat-bg: #2d2d2d;
+    --accent-primary: rgb(242, 79, 58);
+    --accent-secondary: rgb(250, 110, 54);
+    --button-hover: rgb(238, 99, 29);
+    --shadow: 0 4px 20px rgba(234, 88, 12, 0.1);
+}
+
+/* Visual Novel Socrates UI */
+.socratic-vn-bg {
+    background: linear-gradient(135deg, #181818 60%, #2d2d2d 100%);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+    border: 2px solid #f97316;
+    position: relative;
+    overflow: hidden;
+}
+.socratic-vn-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 4px solid #f97316;
+    background: #181818;
+    object-fit: cover;
+    box-shadow: 0 4px 16px rgba(250,110,54,0.25);
+}
+.socratic-vn-bubble {
+    background: rgba(34, 34, 34, 0.98);
+    color: #fff;
+    border-radius: 18px 18px 18px 0;
+    padding: 22px 28px;
+    font-size: 1.15rem;
+    font-family: 'Georgia', serif;
+    margin-left: 24px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 12px rgba(250,110,54,0.10);
+    border: 2px solid #f97316;
+    max-width: 80%;
+    position: relative;
+}
+.socratic-vn-bubble:after {
+    content: '';
+    position: absolute;
+    left: -18px;
+    top: 32px;
+    width: 0;
+    height: 0;
+    border-top: 18px solid transparent;
+    border-bottom: 18px solid transparent;
+    border-right: 18px solid #222;
+    filter: drop-shadow(-2px 0 0 #f97316);
+}
+.socratic-vn-log {
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 0 8px;
+    margin-bottom: 12px;
+}
+.socratic-vn-input {
+    background: #232323;
+    color: #fff;
+    border: 2px solid #f97316;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 1rem;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    margin-right: 12px;
+}
+.socratic-vn-send {
+    background: linear-gradient(135deg, #f97316, #fa6e36);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(250,110,54,0.15);
+    transition: background 0.2s;
+}
+.socratic-vn-send:hover {
+    background: linear-gradient(135deg, #fa6e36, #f97316);
+}
+.socratic-vn-bottom {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 12px;
+}
+.socratic-vn-bg::-webkit-scrollbar {
+    width: 8px;
+}
+.socratic-vn-bg::-webkit-scrollbar-thumb {
+    background: #f97316;
+    border-radius: 4px;
 }
 
 /* Base Styles */
@@ -100,58 +204,6 @@ body {
     background-color: var(--chat-bg) !important;
 }
 
-/* Theme Toggle Button */
-.theme-toggle {
-    background: var(--bg-secondary);
-    border: none;
-    padding: 10px 18px;
-    border-radius: 9999px;
-    color: var(--text-primary);
-    font-weight: 500;
-    cursor: pointer;
-    box-shadow: var(--shadow);
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.theme-toggle:hover {
-    transform: translateY(-1px);
-    background: var(--text-secondary);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* Chat Input */
-#message-input {
-    background-color: var(--chat-bg);
-    border-color: var(--border-color);
-    color: var(--text-primary);
-    transition: all 0.2s ease;
-}
-
-#message-input:focus {
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-[data-theme="socrates"] #message-input:focus {
-    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
-}
-
-/* Buttons */
-button {
-    transition: all 0.2s ease;
-}
-
-#send-button {
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-}
-
-#send-button:hover {
-    background: linear-gradient(135deg, var(--button-hover), var(--accent-primary));
-}
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
@@ -172,7 +224,7 @@ button {
 }
 </style>
 
-<div class="max-w-6xl mx-auto mt-6 space-y-6 ">
+<div class="max-w-6xl mx-auto mt-6 space-y-6">
     <!-- Header Section -->
     <div class="themed-bg-gradient text-white p-6 rounded-xl shadow-lg">
         <div class="flex justify-between items-start">
@@ -188,11 +240,44 @@ button {
         </div>
     </div>
 
-    <!-- Main Interface -->
+    <!-- Main Interface: Socrates Chat in center, AI Assistant on right -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Chat Interface (2/3 width) -->
-        <div class="lg:col-span-2">
-            <div class="themed-bg shadow-xl rounded-xl overflow-hidden flex flex-col border" style="height: 70vh;">
+        <!-- Socrates Bubble Interface (center, 2/3 width) -->
+        <div class="lg:col-span-2 flex flex-col items-center justify-center" id="socrates-chat" style="height: 70vh;">
+            <div class="socratic-vn-bg w-full max-w-2xl flex flex-col items-center justify-end h-full p-0 relative">
+                <!-- Dialogue Log -->
+                <div id="socrates-vn-log" class="socratic-vn-log w-full flex flex-col justify-end">
+                    <div class="flex items-end mb-2">
+                        <img src="https://cloak.romanbaths.co.uk/images/characters/haruspex-talking.gif" alt="Socrates Talking" class="socratic-vn-avatar mr-2" />
+                        <div class="socratic-vn-bubble" id="socrates-bubble-text">
+                            Welcome to Socratic Mode! I'll guide you with questions to help you think independently about <i><?php echo htmlspecialchars($param_topic) ?></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Input at the bottom -->
+                <form id="socrates-form" class="socratic-vn-bottom px-4 pb-4">
+                    <textarea
+                        id="socrates-input"
+                        name="question"
+                        placeholder="Ask Socrates a question..."
+                        rows="1"
+                        class="socratic-vn-input"
+                        style="min-height: 44px; max-height: 120px;"
+                    ></textarea>
+                    <button
+                        type="submit"
+                        id="socrates-send"
+                        class="socratic-vn-send ml-2"
+                    >
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+        <!-- Sidebar (1/3 width): AI Assistant Chat and Info -->
+        <div class="space-y-6 flex flex-col">
+            <!-- AI Assistant Chat -->
+            <div class="themed-bg shadow-xl rounded-xl overflow-hidden flex flex-col border flex-1" style="min-height: 350px;">
                 <!-- Chat Header -->
                 <div class="themed-bg-gradient text-white p-4 flex items-center justify-between flex-shrink-0">
                     <div class="flex items-center space-x-3">
@@ -200,18 +285,11 @@ button {
                             <span class="text-lg">🤖</span>
                         </div>
                         <div>
-                            <h2 class="text-lg font-semibold">AI Assistant</h2>
+                            <h2 class="text-lg font-semibold">AI Assistant (Modern)</h2>
                             <p id="current-level-display" class="text-blue-100 text-sm">Tutor Mode</p>
                         </div>
                     </div>
-                    <div>
-                        <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle">
-                                <span id="theme-icon">🌙</span>
-                                <span id="theme-text">Socrates Mode</span>
-                        </button>
-                    </div>
                 </div>
-
                 <!-- Chat Messages -->
                 <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 themed-chat-bg min-h-0">
                     <div class="flex items-start space-x-3">
@@ -223,7 +301,6 @@ button {
                         </div>
                     </div>
                 </div>
-
                 <!-- Typing Indicator -->
                 <div id="typing-indicator" class="px-4 py-2 hidden flex-shrink-0">
                     <div class="flex items-start space-x-3">
@@ -239,7 +316,6 @@ button {
                         </div>
                     </div>
                 </div>
-
                 <!-- Chat Input -->
                 <div class="border-t themed-bg p-4 flex-shrink-0">
                     <form id="chat-form" class="flex space-x-3 items-center">
@@ -261,16 +337,11 @@ button {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                             </svg>
                         </button>
-                        
                     </form>
                 </div>
             </div>
-        </div>
-
-        <!-- Sidebar (1/3 width) -->
-        <div class="space-y-6">
             <!-- Current Level Info -->
-            <div class="themed-bg rounded-xl shadow-lg p-6 border">
+            <div class="themed-bg p-6 rounded-xl shadow-lg border mt-6">
                 <h3 class="text-lg font-semibold mb-4 themed-text">🎯 Current AI Level</h3>
                 <div id="level-info">
                     <div class="text-center">
@@ -282,9 +353,8 @@ button {
                     </div>
                 </div>
             </div>
-
             <!-- Quick Actions -->
-            <div class="themed-bg rounded-xl shadow-lg p-6 border">
+            <div class="themed-bg p-6 rounded-xl shadow-lg border mt-6">
                 <h3 class="text-lg font-semibold mb-4 themed-text">⚡ Quick Actions</h3>
                 <div class="space-y-3">
                     <button onclick="startChallenge('coding')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
@@ -313,9 +383,7 @@ button {
                 </svg>
             </button>
         </div>
-        <div id="challenge-content" class="mb-6">
-            <!-- Challenge content will be loaded here -->
-        </div>
+        <div id="challenge-content" class="mb-6"></div>
         <div class="flex justify-end space-x-3">
             <button onclick="closeChallenge()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 themed-text">Cancel</button>
             <button onclick="completeChallenge()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Mark Complete</button>
@@ -328,50 +396,16 @@ let currentSubject = <?php echo json_encode($param_topic ?: 'programming'); ?>;
 let currentSessionId = generateSessionId();
 let currentChallenge = null;
 
-// Theme functionality
-function toggleTheme() {
-    const html = document.documentElement;
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-    const themeText = document.getElementById('theme-text');
-    
-    const currentTheme = html.getAttribute('data-theme');
-    
-    if (currentTheme === 'socrates') {
-        html.removeAttribute('data-theme');
-        themeIcon.textContent = '🌙';
-        themeText.textContent = 'Socrates Mode';
-        localStorage.setItem('theme', 'modern');
-    } else {
-        html.setAttribute('data-theme', 'socrates');
-        themeIcon.textContent = '☀️';
-        themeText.textContent = 'Modern Mode';
-        localStorage.setItem('theme', 'socrates');
-    }
-}
+// System prompts for each mode
+const SYSTEM_PROMPTS = {
+    modern: "You are an AI tutor providing clear, detailed, and step-by-step explanations to help the user understand the topic. Answer directly and concisely, offering practical examples where applicable.",
+    socrates: "You are a Socratic AI that responds with thought-provoking questions to guide the user toward deeper understanding and independent thinking. Avoid giving direct answers; instead, ask questions that encourage reflection and exploration of the topic."
+};
 
-// Load saved theme on page load
-function loadTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const html = document.documentElement;
-    const themeIcon = document.getElementById('theme-icon');
-    const themeText = document.getElementById('theme-text');
-    
-    if (savedTheme === 'modern') {
-        html.setAttribute('data-theme', 'modern');
-        themeIcon.textContent = '🌙';
-        themeText.textContent = 'Modern Mode';
-    } else {
-        html.removeAttribute('data-theme');
-        themeIcon.textContent = '☀️';
-        themeText.textContent = 'Socrates Mode';
-    }
-}
-
-// Initialize when DOM is ready
+// Initialize plugin
 document.addEventListener('DOMContentLoaded', function() {
     console.log('AI Balance Trainer: DOM loaded, initializing...');
-    loadTheme(); // Load theme first
+    loadTheme();
     initializePlugin();
 });
 
@@ -383,112 +417,120 @@ function initializePlugin() {
 
 function setupEventListeners() {
     const messageInput = document.getElementById('message-input');
-    const sendButton = document.getElementById('send-button');
-    const subjectSelector = document.getElementById('subject-selector');
+    const socratesInput = document.getElementById('socrates-input');
 
-    // Auto-resize textarea
-    messageInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
-
-    // Handle Enter key
-    messageInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleChatSubmission(e);
+    // Auto-resize textareas
+    [messageInput, socratesInput].forEach(input => {
+        if (input) {
+            input.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
         }
     });
 
-    // Subject change
-    if (subjectSelector) {
-        subjectSelector.addEventListener('change', function() {
-            currentSubject = this.value;
-            console.log('Subject changed to:', currentSubject);
-            updateCurrentLevel();
+    // Handle Enter key for Modern mode
+    if (messageInput) {
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+            }
         });
     }
 
-    // Form submission
-    document.getElementById('chat-form').addEventListener('submit', handleChatSubmission);
-    
-    console.log('Event listeners set up successfully');
+    // Handle Enter key for Socrates mode
+    if (socratesInput) {
+        socratesInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('socrates-form').dispatchEvent(new Event('submit'));
+            }
+        });
+    }
 }
 
-async function handleChatSubmission(e) {
+// Modern chat submission (calls api.php)
+document.getElementById('chat-form').addEventListener('submit', async function(e) {
     e.preventDefault();
-    console.log('Chat submission triggered');
-    
     const messageInput = document.getElementById('message-input');
     const sendButton = document.getElementById('send-button');
     const question = messageInput.value.trim();
-    
-    if (!question) {
-        console.log('Empty question, skipping');
-        return;
-    }
-    
-    console.log('Sending question:', question, 'Subject:', currentSubject);
-    
-    // Add user message
+    if (!question) return;
+
     addMessage(question, true);
-    
-    // Clear input and disable send button
     messageInput.value = '';
     messageInput.style.height = 'auto';
     sendButton.disabled = true;
-    
-    // Show typing indicator
     showTyping();
-    
     try {
-        const url = `api.php?action=chat&question=${encodeURIComponent(question)}&subject=${currentSubject}&session_id=${currentSessionId}`;
-        console.log('API URL:', url);
-        
+        const url = `api.php?action=chat&question=${encodeURIComponent(question)}&subject=${encodeURIComponent(currentSubject)}&session_id=${encodeURIComponent(currentSessionId)}&prompt=${encodeURIComponent(SYSTEM_PROMPTS.modern)}`;
         const response = await fetch(url);
         const data = await response.json();
-        
-        console.log('API Response:', data);
-        
         hideTyping();
-        
         if (data.error) {
-            addMessage('Sorry, I encountered an error: ' + (data.message || 'Unknown error'), false);
+            addMessage('Error: ' + (data.message || 'Unknown error'), false);
+            console.error('Modern API error:', data.message);
         } else {
             addMessage(data.answer, false);
             if (data.ai_level) {
                 updateLevelDisplay(data.ai_level, data.level_name, data.level_description);
             }
         }
-        
     } catch (error) {
-        console.error('Fetch error:', error);
         hideTyping();
-        addMessage('Sorry, I couldn\'t connect to the server. Please try again. Error: ' + error.message, false);
+        addMessage('Error connecting to server: ' + error.message, false);
+        console.error('Modern API connection error:', error);
     }
-    
     sendButton.disabled = false;
     messageInput.focus();
-}
+});
+
+// Socrates chat submission (calls socrates_api.php)
+document.getElementById('socrates-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const messageInput = document.getElementById('socrates-input');
+    const sendButton = document.getElementById('socrates-send');
+    const question = messageInput.value.trim();
+    if (!question) return;
+
+    addSocratesMessage(question, true);
+    messageInput.value = '';
+    messageInput.style.height = 'auto';
+    sendButton.disabled = true;
+    showSocratesTyping();
+    try {
+        const url = `socrates_api.php?action=socratic_chat&question=${encodeURIComponent(question)}&subject=${encodeURIComponent(currentSubject)}&session_id=${encodeURIComponent(currentSessionId)}&prompt=${encodeURIComponent(SYSTEM_PROMPTS.socrates)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        hideSocratesTyping();
+        if (data.error) {
+            addSocratesMessage('Error: ' + (data.message || 'Unknown error'), false);
+            console.error('Socrates API error:', data.message);
+        } else {
+            addSocratesMessage(data.answer, false);
+        }
+    } catch (error) {
+        hideSocratesTyping();
+        addSocratesMessage('Error connecting to server: ' + error.message, false);
+        console.error('Socrates API connection error:', error);
+    }
+    sendButton.disabled = false;
+    messageInput.focus();
+});
 
 function addMessage(content, isUser = false) {
     const chatMessages = document.getElementById('chat-messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `flex items-start space-x-3 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
-    
-    // Format content with line breaks
     const formattedContent = content.replace(/\n/g, '<br>');
-    
     const avatarClass = isUser 
         ? 'w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0'
         : 'w-8 h-8 bg-gradient-to-br from-blue-400 to-violet-500 rounded-full flex items-center justify-center flex-shrink-0';
-    
     const avatarIcon = isUser ? '👤' : '🤖';
-    
     const messageClass = isUser 
         ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white p-3 rounded-lg shadow-sm max-w-md'
         : 'themed-bg p-3 rounded-lg shadow-sm max-w-md border';
-    
     const textClass = isUser ? 'text-white' : 'themed-text';
     
     messageDiv.innerHTML = `
@@ -496,12 +538,43 @@ function addMessage(content, isUser = false) {
             <span class="text-white text-sm">${avatarIcon}</span>
         </div>
         <div class="${messageClass}">
-            <div class="${textClass}">${formattedContent}</div>
+            <p class="${textClass}">${formattedContent}</p>
         </div>
     `;
-    
     chatMessages.appendChild(messageDiv);
     scrollToBottom();
+}
+
+/* Visual Novel Socrates UI */
+function addSocratesMessage(content, isUser = false) {
+    const log = document.getElementById('socrates-vn-log');
+    const bubble = document.createElement('div');
+    bubble.className = 'flex items-end mb-2';
+    if (isUser) {
+        bubble.innerHTML = `
+            <div class="flex-1"></div>
+            <div class="socratic-vn-bubble bg-gradient-to-br from-gray-700 to-gray-900 text-orange-200 border-orange-400" style="border-radius:18px 18px 0 18px; margin-right:12px; margin-left:auto;">
+                <span class="opacity-80 italic">You: ${content.replace(/\n/g, '<br>')}</span>
+            </div>
+        `;
+    } else {
+        bubble.innerHTML = `
+            <img src="https://cloak.romanbaths.co.uk/images/characters/haruspex-talking.gif" alt="Socrates Talking" class="socratic-vn-avatar mr-2" />
+            <div class="socratic-vn-bubble">
+                ${content.replace(/\n/g, '<br>')}
+            </div>
+        `;
+    }
+    log.appendChild(bubble);
+    log.scrollTop = log.scrollHeight;
+}
+
+function showSocratesTyping() {
+    addSocratesMessage('<span class="opacity-70">Socrates is thinking...</span>', false);
+}
+
+function hideSocratesTyping() {
+    // No-op, handled by addSocratesMessage
 }
 
 function showTyping() {
@@ -515,10 +588,7 @@ function hideTyping() {
 
 function scrollToBottom() {
     const chatMessages = document.getElementById('chat-messages');
-    chatMessages.scrollTo({
-        top: chatMessages.scrollHeight,
-        behavior: 'smooth'
-    });
+    chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
 }
 
 function clearChat() {
@@ -540,11 +610,9 @@ function clearChat() {
 
 async function updateCurrentLevel() {
     try {
-        const response = await fetch(`api.php?action=get_progress&subject=${currentSubject}`);
+        const response = await fetch(`api.php?action=get_progress&subject=${encodeURIComponent(currentSubject)}`);
         const data = await response.json();
-        
         console.log('Progress data:', data);
-        
         if (!data.error && data.progress) {
             updateLevelDisplay(data.progress.ai_level, data.level_name, data.level_description);
         }
@@ -557,19 +625,14 @@ function updateLevelDisplay(level, levelName, levelDescription) {
     document.getElementById('current-level-display').textContent = levelName;
     document.getElementById('current-level-name').textContent = levelName;
     document.getElementById('current-level-description').textContent = levelDescription;
-    
     console.log('Level display updated:', level, levelName);
 }
 
 async function startChallenge(type) {
-    console.log('Starting challenge:', type, 'for subject:', currentSubject);
-    
     try {
-        const response = await fetch(`api.php?action=start_challenge&challenge_type=${type}&subject=${currentSubject}`);
+        const response = await fetch(`api.php?action=start_challenge&challenge_type=${encodeURIComponent(type)}&subject=${encodeURIComponent(currentSubject)}`);
         const data = await response.json();
-        
         console.log('Challenge data:', data);
-        
         if (!data.error && data.challenge) {
             currentChallenge = data.challenge;
             showChallengeModal(data.challenge);
@@ -583,8 +646,6 @@ async function startChallenge(type) {
 }
 
 function showChallengeModal(challenge) {
-    console.log('Showing challenge modal:', challenge);
-    
     document.getElementById('challenge-title').textContent = challenge.title;
     document.getElementById('challenge-content').innerHTML = `
         <div class="space-y-4">
@@ -610,7 +671,6 @@ function showChallengeModal(challenge) {
             </div>
         </div>
     `;
-    
     document.getElementById('challenge-modal').style.display = 'flex';
 }
 
@@ -624,18 +684,13 @@ async function completeChallenge() {
         alert('No active challenge');
         return;
     }
-    
     const aiScore = prompt("Rate how much you used AI assistance (0-10):");
     const independentScore = prompt("Rate how much you solved independently (0-10):");
-    
     if (aiScore === null || independentScore === null) return;
-    
     try {
-        const response = await fetch(`api.php?action=complete_challenge&subject=${currentSubject}&ai_score=${aiScore}&independent_score=${independentScore}`);
+        const response = await fetch(`api.php?action=complete_challenge&subject=${encodeURIComponent(currentSubject)}&ai_score=${encodeURIComponent(aiScore)}&independent_score=${encodeURIComponent(independentScore)}`);
         const data = await response.json();
-        
         console.log('Challenge completion result:', data);
-        
         if (data.success) {
             alert(`Challenge completed! New level: ${data.level_name}`);
             closeChallenge();
@@ -656,25 +711,15 @@ function generateSessionId() {
 // Debug function
 function debugAPI() {
     console.log('Testing API endpoints...');
-    
     fetch('api.php?action=get_progress&subject=programming')
         .then(r => r.json())
         .then(data => console.log('Progress API test:', data))
         .catch(e => console.error('Progress API error:', e));
-        
     fetch('api.php?action=start_challenge&challenge_type=coding&subject=programming')
         .then(r => r.json())
         .then(data => console.log('Challenge API test:', data))
         .catch(e => console.error('Challenge API error:', e));
 }
-
-// Focus on input when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    const messageInput = document.getElementById('message-input');
-    if (messageInput) {
-        messageInput.focus();
-    }
-});
 
 console.log('AI Balance Trainer: Script loaded successfully');
 </script>
